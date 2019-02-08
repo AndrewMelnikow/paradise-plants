@@ -1,0 +1,2 @@
+AddDefaultCharset UTF-8
+ErrorDocument 404 https://crewdoo.000webhostapp.com/404_error.php
