@@ -14,7 +14,6 @@ class Item
     
     public function checkInputData()
     {
-        
         /* Filter the input data */
         foreach ($this->item_prop as $prop => $val) {
             $this->item_prop["$prop"] = filter_var
@@ -33,7 +32,11 @@ class Item
             $this->input_alert .= 'e[]=Laukiem "Akcijas cenas termiņa sākums" un "beigas" jābūt aizpildītiem, ja lauks "Akcijas cena" ir aizpildīts&';
         if (!is_numeric($this->item_prop['count'])) 
             $this->input_alert .= 'e[]=Laukam "Daudzums" jāsatur veselo skaitli&';
-        
+        if ($this->item_prop['discount_price'] >= $this->item_prop['price']) $this->input_alert .= 'e[]=Akcijas cenai jābūt zemākai par parasto cenu&';
+        /* Set empty discount price and discount start and end time to 0 */
+        if (empty($this->item_prop['discount_price'])) $this->item_prop['discount_price'] = 0;
+        if (empty($this->item_prop['discount_price_time_start'])) $this->item_prop['discount_price_time_start'] = '0000-00-00';
+        if (empty($this->item_prop['discount_price_time_end'])) $this->item_prop['discount_price_time_end'] = '0000-00-00';
     }
     
 }
@@ -122,7 +125,7 @@ class AddItem extends Item
                            'item_discount_price_time_start' => $this->item_prop['discount_price_time_start'],
                            'item_discount_price_time_end' => $this->item_prop['discount_price_time_end'], 
                            'item_count' => $this->item_prop['count'],
-                           'item_is_visible' => $this->item_prop['is_visible']]);               
+                           'item_is_visible' => $this->item_prop['is_visible']]);    
             header("Location: adminadditem.php?success");
         } else {
             $itemprops = null;
@@ -199,7 +202,6 @@ class EditItem extends Item
             global $pdo;
             $img_array = serialize($this->img_array);
             
-            /* Insert datas in database */
             $query = "UPDATE items SET name = :item_name, 
                                        description = :item_descr,
                                        image_path = :item_image_path,
